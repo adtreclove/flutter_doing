@@ -5,6 +5,16 @@ a small, always-visible window on the desktop that can switch between
 several views — from a tiny "current task" card up to a full editing view
 with multiple lists.
 
+## Screenshots
+
+| Compact View                                          | Classic View                                                          | Classic View with overview                                                       |
+| ----------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| ![Compact View](assets/Screenshots/doing_compact.png) | ![Classic View](assets/Screenshots/doing_classic_without_sorting.png) | ![Classic View with overview](assets/Screenshots/doing_classic_with_sorting.png) |
+
+| Edit View                                       | Settings                                           | Settings (more)                                             | Layout                                         |
+| ----------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------- |
+| ![Edit View](assets/Screenshots/doing_edit.png) | ![Settings](assets/Screenshots/doing_settings.png) | ![Settings (more)](assets/Screenshots/doing_settings_2.png) | ![Layout](assets/Screenshots/doing_layout.png) |
+
 ## Views
 
 - **Compact View** — the smallest form: just the active list's most
