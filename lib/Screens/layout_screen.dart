@@ -20,17 +20,13 @@ class LayoutScreen extends ConsumerStatefulWidget {
   ConsumerState<LayoutScreen> createState() => _LayoutScreenState();
 }
 
-/// Let's the user choose his desired Layout of the app when using it for the first time
 class _LayoutScreenState extends ConsumerState<LayoutScreen> {
   late ThemeData themeData;
 
   // Local working copy of the layout choice — deliberately NOT written to
   // settingsProvider on every tap. Unlike theme/language (which take effect
   // immediately, since the user is previewing them live on the actual
-  // window), the layout choice should only become real when "Weiter" is
-  // pressed. Writing it eagerly meant an unrelated rebuild (e.g. a theme
-  // change) could cause AppScreenStateNotifier to pick it up and navigate
-  // away from LayoutScreen before onboarding was ever finished.
+  // window)
   String? _selectedLayoutStyle;
 
   @override
@@ -40,10 +36,7 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
     final theme = _resolveTheme(settings.theme);
 
     // Seed the local selection from the persisted value exactly once. After
-    // that, this field is the source of truth for what's shown selected —
-    // it does NOT resync from settings.layoutStyle on later rebuilds, so
-    // an unrelated settings change (theme, language) can't reset or
-    // override what the user has tentatively picked here.
+    // that, this field is the source of truth for what's shown selected
     _selectedLayoutStyle ??= settings.layoutStyle;
 
     return LayoutBuilder(
@@ -56,8 +49,14 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
             body: Column(
               children: [
                 Platform.isMacOS
-                    ? SettingsTitleBarMac(title: "DOING - Initialisierung")
-                    : SettingsTitleBarWindows(title: "DOING - Initialisierung"),
+                    ? SettingsTitleBarMac(
+                        title:
+                            "DOING - ${getIt<LocalizationService>().localizations.layout_screen_title}",
+                      )
+                    : SettingsTitleBarWindows(
+                        title:
+                            "DOING - ${getIt<LocalizationService>().localizations.layout_screen_title}",
+                      ),
                 Container(
                   height: 70,
                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -69,7 +68,12 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
                   ),
                   child: Row(
                     children: [
-                      Text("Präferenzen", style: theme.textTheme.titleLarge),
+                      Text(
+                        getIt<LocalizationService>()
+                            .localizations
+                            .layout_screen_preferences,
+                        style: theme.textTheme.titleLarge,
+                      ),
                       Spacer(),
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
@@ -77,7 +81,9 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
                           child: Row(
                             children: [
                               Text(
-                                "Abschließen",
+                                getIt<LocalizationService>()
+                                    .localizations
+                                    .layout_screen_finish_btn,
                                 style: TextStyle(fontSize: 15),
                               ),
                               SizedBox(width: 10),
@@ -85,10 +91,6 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
                             ],
                           ),
                           onPressed: () async {
-                            // Commit both the finished-onboarding flag AND the
-                            // tentative layout choice together, in one write —
-                            // this is the moment the local selection becomes
-                            // the real, persisted setting.
                             final updatedSettings = settings.copyWith(
                               openedBefore: true,
                               layoutStyle: _selectedLayoutStyle,
@@ -109,7 +111,9 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
                     children: [
                       _buildSection(
                         theme: theme,
-                        title: "Layout",
+                        title: getIt<LocalizationService>()
+                            .localizations
+                            .layout_screen_section_layout_title,
                         icon: Icons.info,
 
                         children: [
@@ -191,8 +195,8 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
                               final selectedLang = Language.values.firstWhere(
                                 (lang) => lang.name == value,
                               );
-                              // Language changes immediately too — same
-                              // reasoning as theme.
+                              // Language changes immediately too, same
+                              // reason as theme.
                               final updated = settings.copyWith(
                                 language: selectedLang,
                               );
@@ -300,8 +304,6 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
     final accent = theme.colorScheme.primary;
 
     void selectLayout(String newValue) {
-      // Purely local — no ref, no saveSettings. This is a tentative pick
-      // the user can freely change until "Weiter" is pressed.
       setState(() => _selectedLayoutStyle = newValue);
     }
 
@@ -359,13 +361,13 @@ class _LayoutScreenState extends ConsumerState<LayoutScreen> {
     required ThemeData theme,
     required String title,
     required String subtitle,
-    required String value, // stable key, e.g. "light" / "dark" / "system"
+    required String value,
     required List<DropdownItem> items,
     required ValueChanged<String?> onChanged,
   }) {
     // Guard: if the stored key somehow doesn't match any known item
     // (corrupted data, renamed key, etc.), fall back to the first
-    // item instead of letting DropdownButton assert/crash.
+    // item instead of letting DropdownButton crash.
     final hasMatch = items.any((item) => item.key == value);
     final safeValue = hasMatch ? value : items.first.key;
 

@@ -85,9 +85,8 @@ class ScreenStateNotifier extends AsyncNotifier<ScreenState> {
 
 /// Computes the actual target window size for a given screen state,
 /// accounting for settings that affect size within a state (currently
-/// just showKPI). Used both when locking bounds in build() and when
+/// just showSorting). Used both when locking bounds in build() and when
 /// actually resizing in changeState(), so the two never disagree.
-///
 
 Size _resolveWindowSize(ScreenState state, Settings settings) {
   switch (state) {
@@ -99,6 +98,7 @@ Size _resolveWindowSize(ScreenState state, Settings settings) {
           ? ScreenState.withSorting.windowSize
           : ScreenState.classic.windowSize;
     case ScreenState.edit:
+      return ScreenState.edit.windowSize;
     case ScreenState.settings:
       return ScreenState.settings.windowSize;
     case ScreenState.layout:
@@ -110,33 +110,33 @@ Size _resolveWindowSize(ScreenState state, Settings settings) {
 Future<void> setCompactWindow() async {
   coloredLog("[SCREEN STATE PROV] Setting compact window size", color: 'red');
   await windowManager.setBackgroundColor(Colors.transparent);
-  //await windowManager.setAsFrameless();
+
   await windowManager.setSize(ScreenState.compact.windowSize, animate: true);
 }
 
 Future<void> setClassicWindow(Settings settings) async {
-  coloredLog("[SCREEN STATE PROV] Setting normal window size", color: 'red');
+  coloredLog("[SCREEN STATE PROV] Setting classic window size", color: 'red');
   final size = settings.showSorting
       ? ScreenState.withSorting.windowSize
       : ScreenState.classic.windowSize;
 
   coloredLog(
-    "[SCREEN STATE PROV] Showing KPI: ${settings.showSorting}. Window size = $size",
+    "[SCREEN STATE PROV] Showing sorting: ${settings.showSorting}. Window size = $size",
     color: 'red',
   );
 
   await windowManager.setBackgroundColor(Colors.transparent);
-  // await windowManager.setAsFrameless();
+
   await windowManager.setSize(size, animate: false);
 }
 
 Future<void> setEditWindow() async {
-  coloredLog("[SCREEN STATE PROV] Setting project window size", color: 'red');
+  coloredLog("[SCREEN STATE PROV] Setting edit window size", color: 'red');
   await windowManager.setSize(ScreenState.edit.windowSize, animate: false);
 }
 
 Future<void> setLayoutWindow() async {
   await windowManager.setBackgroundColor(Colors.white);
-  // await windowManager.setAsFrameless();
+
   await windowManager.setSize(ScreenState.layout.windowSize, animate: false);
 }

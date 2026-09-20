@@ -11,8 +11,8 @@
   "settings_theme_dark":                        "Dark",
   "settings_theme_light":                       "Light",
   "settings_theme_system":                      "System",
-  "settings_show_kpi_title":                    "Show KPIs",
-  "settings_show_kpi_subtitle":                 "Select if you want your KPIs to be displayed in classic layout",
+  "settings_show_sorting_title":                "Show overview",
+  "settings_show_sorting_subtitle":             "Select if you want an overview to be displayed in classic layout",
   "settings_startup" :                          "Startup",
   "settings_startup_title_windows" :            "Start with windows",
   "settings_startup_title_mac" :                "Start with mac",
@@ -37,6 +37,55 @@
 
   "tray_settings":                              "Settings",
   "tray_close_app_windows" :                    "Close app",
-  "tray_close_app_mac" :                        "Stop app"
+  "tray_close_app_mac" :                        "Stop app",
+
+  "layout_screen_title":                        "Setup",
+  "layout_screen_finish_btn":                   "Finish",
+  "layout_screen_preferences":                  "Preferences",
+  "layout_screen_section_layout_title":         "Layout",
+
+
+  "edit_screen_no_list":                        "No list",
+  "edit_screen_new_list":                       "New list",
+  "edit_screen_new_list_name":                  "List name",
+  "edit_screen_status_title":                   "Status",
+  "edit_screen_status_priority":                "Priority",
+  "edit_screen_status_notes":                   "Notes",
+  "edit_screen_notes_hint":                     "Notes for this task",
+  "edit_screen_cancel":                         "Cancel",
+  "edit_screen_create":                         "Create",
+  "edit_screen_empty_detail":                   "Choose a task from the list or create a new one.",
+  "edit_screen_delete":                         "Delete",
+  "edit_screen_activate_again":                 "Reactivate",
+  "edit_screen_defer":                          "Defer",
+  "edit_screen_no_task_in_list":                "No task in this list yet.",
+  "edit_screen_new_task":                       "New task ..",
+  "edit_screen_close":                          "Close",
+  "edit_screen_list":                           "List:",
+  "edit_screen_title":                          "Edit tasks",
+  "edit_screen_task_title":                     "Title",
+
+
+  "classic_view_no_list":                       "No list",
+  "classic_view_upcoming":                      "Upcoming",
+  "classic_view_no_upcoming_tasks":             "No upcoming tasks",
+  "classic_view_sorting_done":                  "done",
+  "classic_view_total":                         "total",
+  "classic_view_overview":                      "Overview",
+  
+
+  "tasks_all_done":                             "All done! ^-^",
+  "tasks_no_tasks":                             "No tasks",
+
+  "default_list_name":                          "My tasks",
+
+  "task_status_open":                           "Open",
+  "task_status_done":                           "Done",
+  "task_status_deferred":                       "Deferred",
+
+  "task_priority_low":                          "Low",
+  "task_priority_medium":                       "Medium",
+  "task_priority_high":                         "High"
+
 
 }

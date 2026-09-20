@@ -4,7 +4,7 @@ import 'package:flutter_desktop_notifications/flutter_desktop_notifications.dart
 import 'package:flutter_doing/Helpers/log_helper.dart';
 import 'package:flutter_doing/Services/shared_preferences_service.dart';
 
-/// Wraps [DesktopNotifier] and gates every notification behind the user's
+/// Wraps DesktopNotifier and gates every notification behind the user's
 /// `allowNotifications` setting, re-checked fresh on every call — so a
 /// setting change (from this window or another) takes effect immediately,
 /// without needing to re-init this service.
@@ -53,9 +53,6 @@ class NotificationService {
             "[NOTIFICATION SERVICE] Notification activated: ${details.arguments}",
             color: 'magenta',
           );
-          // details.arguments -> the clicked action's `arguments`, or the
-          //                       message's `launch` value for a body tap.
-          // details.userInput  -> { inputId: typed text } for a reply field.
           break;
         case NotificationEvent.dismissedByUser:
         case NotificationEvent.dismissedByApp:
@@ -69,16 +66,11 @@ class NotificationService {
     });
   }
 
-  /// Re-reads the setting from disk every call, so this reflects the
-  /// current value even if it was changed in another window.
   Future<bool> _notificationsAllowed() async {
     final settings = await SharedPreferencesService.instance.loadSettings();
     return settings.allowNotifications;
   }
 
-  /// Requests the OS-level notification permission if not already granted.
-  /// Safe to call repeatedly — only actually prompts (on macOS) the first
-  /// time; Windows and Linux always return true.
   Future<bool> _ensurePermission() async {
     if (_permissionGranted) return true;
 
@@ -90,9 +82,6 @@ class NotificationService {
     return _permissionGranted;
   }
 
-  /// Shows a notification if (and only if) the user has notifications
-  /// enabled in settings AND OS-level permission has been granted.
-  /// Returns true if the notification was actually shown.
   Future<bool> showNotification(
     String title,
     String body, {
@@ -138,8 +127,6 @@ class NotificationService {
     }
   }
 
-  /// Convenience variant matching your original call shape, with a
-  /// default "Open" action.
   Future<bool> showSimpleNotification(String title, String body) {
     coloredLog(
       "[NOTIFICATION SERVICE] Showing simple notification",
@@ -154,7 +141,6 @@ class NotificationService {
     );
   }
 
-  /// Removes the most recently shown notification, if any.
   Future<void> removeLatestNotification() async {
     final id = _lastNotificationId;
     if (id == null) return;
@@ -162,7 +148,6 @@ class NotificationService {
     _lastNotificationId = null;
   }
 
-  /// Removes every notification this app has delivered.
   Future<void> removeAllNotifications() async {
     await _notifier.cancelAll();
     _lastNotificationId = null;

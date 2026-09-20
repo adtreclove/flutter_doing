@@ -6,9 +6,11 @@ class LayoutPreview extends StatelessWidget {
   final String style; // 'classic' or 'compact'
   final ThemeData theme;
 
-  static const _barDark = Color(0xFF4A4A4A);
-  static const _barLight = Color(0xFFBDBDBD);
-  static const _avatarColor = Color(0xFF9E9E9E);
+  static const _doneGreen = Color(0xFF43A047);
+  static const _accentBlue = Colors.blueAccent;
+
+  Color get _barLight => theme.dividerColor;
+  Color get _barDark => theme.textTheme.bodyLarge?.color ?? Colors.grey;
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,7 @@ class LayoutPreview extends StatelessWidget {
         color: theme.splashColor,
         borderRadius: BorderRadius.circular(6),
       ),
-      // Centers the fixed-size mini-card below within whatever space this
-      // frame actually has — the card itself never stretches to fill it.
+
       alignment: Alignment.center,
       child: style == 'compact'
           ? _buildCompactPreview()
@@ -26,17 +27,61 @@ class LayoutPreview extends StatelessWidget {
     );
   }
 
-  Widget _buildClassicPreview() {
-    // Fixed canvas — every child below is designed to fit inside exactly
-    // this box, regardless of how big or small the outer frame is.
+  Widget _buildCompactPreview() {
     return SizedBox(
-      width: 130,
-      height: 74,
+      width: 132,
+      height: 26,
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(width: 3, color: _accentBlue),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _bar(_accentBlue, width: 16, height: 3),
+                    const SizedBox(height: 3),
+                    _bar(_barDark, width: double.infinity, height: 4),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Center(child: _circle(_doneGreen, size: 12)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildClassicPreview() {
+    return SizedBox(
+      width: 132,
+      height: 92,
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: theme.cardColor,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.12),
@@ -49,110 +94,44 @@ class LayoutPreview extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            _bar(_barLight, width: 38, height: 4),
+            const SizedBox(height: 8),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _circle(_avatarColor, size: 14),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: _circle(_accentBlue, size: 6),
+                ),
                 const SizedBox(width: 5),
                 Expanded(
-                  // Safe now — Expanded resolves against the fixed 130px
-                  // parent width, not an unbounded/variable frame.
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _bar(_barDark, width: double.infinity, height: 4),
-                      const SizedBox(height: 3),
-                      _bar(_barLight, width: 26, height: 4),
-                    ],
-                  ),
+                  child: _bar(_barDark, width: double.infinity, height: 6),
                 ),
+                const SizedBox(width: 5),
+                _circle(_doneGreen, size: 14),
               ],
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Divider(color: theme.dividerColor, height: 1),
             const SizedBox(height: 6),
-            Row(
-              children: [
-                _clockDigits(barWidth: 4, colonWidth: 1.5, height: 8),
-                const Spacer(),
-                _circle(const Color(0xFFE53935), size: 10),
-              ],
-            ),
+            _bar(_barLight, width: 34, height: 3),
+            const SizedBox(height: 5),
+            _previewRow(),
             const SizedBox(height: 4),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(2),
-              child: LinearProgressIndicator(
-                value: 0.6,
-                minHeight: 4,
-                color: const Color(0xFF43A047),
-                backgroundColor: theme.dividerColor,
-              ),
-            ),
+            _previewRow(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCompactPreview() {
-    return SizedBox(
-      width: 90,
-      height: 22,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(999),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _pencilDot(size: 12),
-            _clockDigits(barWidth: 3, colonWidth: 1, height: 7),
-            _circle(const Color(0xFF43A047), size: 12),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _clockDigits({
-    required double barWidth,
-    required double colonWidth,
-    required double height,
-  }) {
+  Widget _previewRow() {
     return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(8, (i) {
-        final isColon = i == 2 || i == 5;
-        return Padding(
-          padding: const EdgeInsets.only(right: 1.5),
-          child: _bar(
-            _barDark,
-            width: isColon ? colonWidth : barWidth,
-            height: height,
-          ),
-        );
-      }),
-    );
-  }
-
-  Widget _pencilDot({double size = 18}) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: _barLight.withValues(alpha: 0.3),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(Icons.edit, size: size * 0.55, color: _barDark),
+      children: [
+        _circle(_barLight, size: 4),
+        const SizedBox(width: 4),
+        Expanded(child: _bar(_barLight, width: double.infinity, height: 3)),
+      ],
     );
   }
 

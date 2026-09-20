@@ -26,7 +26,7 @@ class SettingsFileStore {
 
   static Future<void> save(Settings settings) async {
     final file = await _getFile();
-    // Write to a temp file, then rename — rename is atomic, so a
+    // Write to a temp file, then rename. rename is atomic, so a
     // concurrent reader from another window/isolate can never observe a
     // partially-written file. This is what was causing corrupted reads
     // during cross-window polling, which silently reset openedBefore

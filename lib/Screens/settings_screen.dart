@@ -204,10 +204,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             theme: theme,
                             title: getIt<LocalizationService>()
                                 .localizations
-                                .settings_show_kpi_title,
+                                .settings_show_sorting_title,
                             subtitle: getIt<LocalizationService>()
                                 .localizations
-                                .settings_show_kpi_subtitle,
+                                .settings_show_sorting_subtitle,
 
                             value: widget.settings.showSorting,
                             onChanged: (value) async {

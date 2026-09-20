@@ -49,13 +49,13 @@ class TitleBarNotifier extends StateNotifier<TitleBarState> {
 
   void setMaximized(bool value) => state = state.copyWith(isMaximized: value);
 
-  /// Vor dem Fenster-Resize aufrufen.
+  /// Call before window resize
   void beginResizeLock() {
     _resizeLocked = true;
   }
 
-  /// Nach dem Resize aufrufen - entsperrt erst nach Cooldown,
-  /// damit die vom OS nachgelieferten Mouse-Events verpuffen.
+  /// call after window resize: unlocks after cooldown, for OS to puffer
+
   void endResizeLock() {
     Timer(_resizeCooldown, () => _resizeLocked = false);
   }

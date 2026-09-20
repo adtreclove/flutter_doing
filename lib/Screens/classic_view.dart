@@ -1,9 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_doing/Controller/screen_state_controller.dart';
 import 'package:flutter_doing/Controller/settings_controller.dart';
 import 'package:flutter_doing/Controller/title_bar_controller.dart';
+import 'package:flutter_doing/Controller/todo_controller.dart';
 import 'package:flutter_doing/Models/screen_state_model.dart';
+import 'package:flutter_doing/Models/todo_data_model.dart';
+import 'package:flutter_doing/Models/todo_item_model.dart';
+import 'package:flutter_doing/Extensions/todo_priority_extension.dart';
+import 'package:flutter_doing/Extensions/todo_status_extension.dart';
+import 'package:flutter_doing/Services/localization_service.dart';
 import 'package:flutter_doing/Widgets/Overlays/confetti_overlay.dart';
 import 'package:flutter_doing/Widgets/sorting_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,20 +19,34 @@ class ClassicView extends ConsumerWidget {
   ClassicView({super.key});
 
   final double _mainPanelWidth = ScreenState.classic.windowSize.width; // 300
-  final double _kpiPanelWidth =
+  final double _sortPanelWidth =
       (ScreenState.withSorting.windowSize.width -
       ScreenState.classic.windowSize.width); // 400
-  static const double _panelHeight = 175;
-
-  final _confettiController = ConfettiController();
+  static const double _panelHeight = 254;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final titleBarState = ref.watch(titleBarProvider);
     final settings = ref.watch(settingsProvider);
+    final todoAsync = ref.watch(todoProvider);
 
-    double progress = 0.0;
+    final data = todoAsync.value;
+    final activeListId = data?.activeListId;
+    final TodoItem? currentItem = data == null
+        ? null
+        : currentItemFor(data, activeListId);
+    final List<TodoItem> upcoming = data == null
+        ? <TodoItem>[]
+        : upcomingItemsFor(data, activeListId);
+    final hasAnyItems =
+        data != null && data.items.any((i) => i.listId == activeListId);
+
+    final activeListName = data == null
+        ? ""
+        : findList(data.lists, activeListId)?.name ?? "";
+
+    final progress = hasAnyItems && currentItem == null ? 1.0 : 0.0;
     final showSorting = settings.showSorting;
 
     double borderRadius = 10;
@@ -37,16 +58,13 @@ class ClassicView extends ConsumerWidget {
     const animationDuration = Duration(milliseconds: 200);
     const animationCurve = Curves.easeOut;
     final totalWidth = showSorting
-        ? _mainPanelWidth + _kpiPanelWidth
+        ? _mainPanelWidth + _sortPanelWidth
         : _mainPanelWidth;
 
     return ConfettiOnComplete(
       progress: progress,
       child: Stack(
         children: [
-          // ONE positioned card for the whole widget — main panel and KPI
-          // panel live inside it as a Row, so hover animates them as a
-          // single unit instead of two independently-moving cards.
           AnimatedPositioned(
             duration: animationDuration,
             curve: animationCurve,
@@ -64,27 +82,29 @@ class ClassicView extends ConsumerWidget {
                   titleBarState.isHovered ? 0 : borderRadius,
                 ),
               ),
-              // mainAxisSize.min + no Expanded children means this Row's
-              // width is exactly the sum of its children's widths, which we
-              // now animate in lockstep with the outer AnimatedContainer
-              // above, instead of jumping instantly — that mismatch was
-              // the source of the overflow during the transition.
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
                     width: _mainPanelWidth,
-                    child: _mainPanelContent(theme: theme, progress: progress),
+                    child: _mainPanelContent(
+                      ref: ref,
+                      theme: theme,
+                      currentItem: currentItem,
+                      upcoming: upcoming,
+                      hasAnyItems: hasAnyItems,
+                      activeListName: activeListName,
+                    ),
                   ),
-                  // Animates its own width from 0 -> _kpiPanelWidth (and
+                  // Animates its own width from 0 -> _sortPanelWidth (and
                   // back) using the SAME duration/curve as the outer card,
                   // so the content never asks for more space than the
                   // container currently has during the transition.
                   AnimatedContainer(
                     duration: animationDuration,
                     curve: animationCurve,
-                    width: showSorting ? _kpiPanelWidth : 0,
+                    width: showSorting ? _sortPanelWidth : 0,
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
                       border: Border(
@@ -96,17 +116,17 @@ class ClassicView extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    // Lays the KPI content out at its full intended width
-                    // regardless of the animated clip width, so text/rows
-                    // inside it don't reflow or wrap mid-animation — they
-                    // just get progressively revealed/hidden by the clip.
                     child: OverflowBox(
                       alignment: Alignment.centerLeft,
                       minWidth: 0,
-                      maxWidth: _kpiPanelWidth,
+                      maxWidth: _sortPanelWidth,
                       child: SizedBox(
-                        width: _kpiPanelWidth,
-                        child: _sortingContent(theme: theme),
+                        width: _sortPanelWidth,
+                        child: _sortingContent(
+                          theme: theme,
+                          data: data,
+                          activeListId: activeListId,
+                        ),
                       ),
                     ),
                   ),
@@ -120,122 +140,293 @@ class ClassicView extends ConsumerWidget {
   }
 
   Widget _mainPanelContent({
+    required WidgetRef ref,
     required ThemeData theme,
-    required double progress,
+    required TodoItem? currentItem,
+    required List<TodoItem> upcoming,
+    required bool hasAnyItems,
+    required String activeListName,
   }) {
+    final accentColor = currentItem?.priority.color ?? theme.dividerColor;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ---- Header: list name -------------------------------------------
         Padding(
-          padding: const EdgeInsets.only(left: 20, top: 10),
+          padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
+          child: Text(
+            activeListName.isEmpty
+                ? getIt<LocalizationService>()
+                      .localizations
+                      .classic_view_no_list
+                : activeListName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+
+        // ---- Current task, front and center -------------------------------
+        // Tapping the task (dot + title) opens the edit screen — always
+        // navigable, even with no current item, so there's still a way to
+        // reach EditView and add a first task.
+        Padding(
+          padding: const EdgeInsets.fromLTRB(18, 4, 18, 0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "text",
-                    style: TextStyle(
-                      color: theme.textTheme.bodyLarge?.color,
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 130,
-                    child: Text(
-                      "text",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color,
-                        fontSize: 13,
+              Expanded(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () => _openEdit(ref, currentItem?.id),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: accentColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              currentItem?.title ??
+                                  (hasAnyItems
+                                      ? getIt<LocalizationService>()
+                                            .localizations
+                                            .tasks_all_done
+                                      : getIt<LocalizationService>()
+                                            .localizations
+                                            .tasks_no_tasks),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 21,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                                color: theme.textTheme.bodyLarge?.color,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 5, top: 20),
-                child: IconButton(
-                  onPressed: () async {},
-                  icon: Icon(
-                    Icons.edit,
-                    size: 20,
-                    color: theme.iconTheme.color,
-                  ),
                 ),
+              ),
+              const SizedBox(width: 8),
+              _doneButton(
+                theme: theme,
+                onPressed: currentItem == null
+                    ? null
+                    : () => ref
+                          .read(todoProvider.notifier)
+                          .markDone(currentItem.id),
               ),
             ],
           ),
         ),
-        Divider(color: theme.dividerColor),
-        Padding(
-          padding: const EdgeInsets.only(left: 30, bottom: 6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "tet",
-                style: TextStyle(
-                  fontSize: 25,
-                  color: theme.textTheme.bodyLarge?.color,
-                ),
-              ),
 
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(right: 5),
-                child: RawMaterialButton(
-                  hoverColor: theme.colorScheme.primary.withValues(alpha: 0.15),
-                  fillColor: theme.colorScheme.surface,
-                  elevation: 3,
-                  padding: const EdgeInsets.all(4),
-                  shape: const CircleBorder(),
-                  onPressed: () async {},
-                  child: Icon(
-                    Icons.play_arrow,
-                    size: 25,
-                    color: theme.iconTheme.color,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 30, right: 30, top: 2),
-          child: LinearProgressIndicator(
-            value: progress,
-            minHeight: 10,
-            color: Colors.grey,
-            backgroundColor: theme.dividerColor,
-          ),
+        const SizedBox(height: 14),
+        Divider(height: 1, color: theme.dividerColor),
+
+        // ---- Preview of what's next -----------------------------------------
+        Expanded(
+          child: _previewSection(theme: theme, upcoming: upcoming),
         ),
       ],
     );
   }
 
-  Widget _sortingContent({required ThemeData theme}) {
-    // Expanded around each Row splits the available height evenly (matching
-    // the Expanded around each card, which already splits width evenly) —
-    // without this, both Rows just take their natural height and don't
-    // fill/share the panel's actual height at all.
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
+  Widget _doneButton({
+    required ThemeData theme,
+    required VoidCallback? onPressed,
+  }) {
+    final enabled = onPressed != null;
+    return SizedBox(
+      width: 32,
+      height: 32,
+      child: RawMaterialButton(
+        onPressed: onPressed,
+        fillColor: enabled ? Colors.green : theme.dividerColor,
+        hoverColor: Colors.green.withValues(alpha: 0.85),
+        elevation: 0,
+        shape: const CircleBorder(),
+        padding: EdgeInsets.zero,
+        child: const Icon(Icons.check, size: 18, color: Colors.white),
+      ),
+    );
+  }
+
+  /// The "lower part" preview of upcoming tasks in the active list
+  Widget _previewSection({
+    required ThemeData theme,
+    required List<TodoItem> upcoming,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 10, 14, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            getIt<LocalizationService>().localizations.classic_view_upcoming,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: upcoming.isEmpty
+                ? Text(
+                    getIt<LocalizationService>()
+                        .localizations
+                        .classic_view_no_upcoming_tasks,
+                    style: theme.textTheme.bodyMedium,
+                  )
+                : ListView.separated(
+                    padding: EdgeInsets.zero,
+                    itemCount: upcoming.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 7),
+                    itemBuilder: (context, index) {
+                      final item = upcoming[index];
+                      return Row(
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: item.priority.color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              item.title,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sortingContent({
+    required ThemeData theme,
+    required TodoData? data,
+    required String? activeListId,
+  }) {
+    final openCount = data == null
+        ? 0
+        : countByStatus(data, activeListId, TodoStatus.open);
+    final doneCount = data == null
+        ? 0
+        : countByStatus(data, activeListId, TodoStatus.done);
+    final deferredCount = data == null
+        ? 0
+        : countByStatus(data, activeListId, TodoStatus.deferred);
+    final total = openCount + doneCount + deferredCount;
+    final completion = total == 0 ? 0.0 : doneCount / total;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
             children: [
-              Expanded(child: SortingCard(value: SortType.open)),
-              Expanded(child: SortingCard(value: SortType.done)),
+              Icon(
+                Icons.insights_outlined,
+                size: 15,
+                color: theme.iconTheme.color,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                getIt<LocalizationService>()
+                    .localizations
+                    .classic_view_overview,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                "$total ${getIt<LocalizationService>().localizations.classic_view_total}",
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withValues(
+                    alpha: 0.7,
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-        Expanded(
-          child: Row(
-            children: [Expanded(child: SortingCard(value: SortType.deferred))],
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: completion,
+              minHeight: 6,
+              backgroundColor: theme.dividerColor,
+              valueColor: const AlwaysStoppedAnimation(Colors.green),
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 6),
+          Text(
+            "${(completion * 100).round()}% ${getIt<LocalizationService>().localizations.classic_view_sorting_done}",
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: SortingCard(value: SortType.open, count: openCount),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SortingCard(value: SortType.done, count: doneCount),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SortingCard(
+                  value: SortType.deferred,
+                  count: deferredCount,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _openEdit(WidgetRef ref, String? itemId) async {
+    ref.read(editingItemIdProvider.notifier).state = itemId;
+    final settings = ref.read(settingsProvider);
+    await ref
+        .read(screenStateProvider.notifier)
+        .changeState(ScreenState.edit, settings);
   }
 }

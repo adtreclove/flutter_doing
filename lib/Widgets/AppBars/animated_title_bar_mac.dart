@@ -103,9 +103,6 @@ class _AnimatedTitleBarMacState extends ConsumerState<AnimatedTitleBarMac> {
               right: 0,
               height: 40,
               child: Material(
-                // macOS title bars are typically a neutral, near-opaque
-                // surface rather than an accent color — closer to the
-                // system's own unified toolbar look than a branded bar.
                 color: Colors.black,
                 elevation: 4,
                 child: GestureDetector(
@@ -117,9 +114,7 @@ class _AnimatedTitleBarMacState extends ConsumerState<AnimatedTitleBarMac> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Centered title — macOS convention places the
-                        // window title in the middle of the bar, not
-                        // left-aligned next to the traffic lights.
+                        // Centered title — macOS convention
                         Text(
                           widget.title,
                           style: const TextStyle(

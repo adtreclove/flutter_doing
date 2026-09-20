@@ -38,7 +38,7 @@ class _AdaptiveMainScreenState extends ConsumerState<AdaptiveMainScreen> {
 
       if (previous.showSorting != next.showSorting) {
         WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _handleShowKPIChange(next),
+          (_) => _handleShowSortingChange(next),
         );
       }
 
@@ -109,11 +109,14 @@ class _AdaptiveMainScreenState extends ConsumerState<AdaptiveMainScreen> {
   }
 
   // everything related to authenticated windows / resizing / layout is handled here
-  Future<void> _handleShowKPIChange(Settings settings) async {
+  Future<void> _handleShowSortingChange(Settings settings) async {
     final appScreenState = ref.read(screenStateProvider).value;
     if (appScreenState == ScreenState.classic ||
         appScreenState == ScreenState.withSorting) {
-      coloredLog("[MAIN] showKPI changed — resizing window", color: 'magenta');
+      coloredLog(
+        "[MAIN] showSorting changed — resizing window",
+        color: 'magenta',
+      );
       await ref
           .read(screenStateProvider.notifier)
           .changeState(appScreenState!, settings);

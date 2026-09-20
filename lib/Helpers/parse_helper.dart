@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:html/parser.dart';
 
@@ -20,4 +21,13 @@ String formatDuration(Duration duration) {
   return '${hours.toString().padLeft(2, '0')}:'
       '${minutes.toString().padLeft(2, '0')}:'
       '${seconds.toString().padLeft(2, '0')}';
+}
+
+final _idRandom = Random();
+
+/// A short, locally-unique id (timestamp + random suffix) — good enough for
+/// local todo lists/items where we don't need globally-unique UUIDs and
+/// don't want to pull in an extra dependency for it.
+String generateId() {
+  return '${DateTime.now().microsecondsSinceEpoch}_${_idRandom.nextInt(1 << 32)}';
 }

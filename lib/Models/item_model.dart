@@ -1,7 +1,6 @@
 import 'package:flutter_doing/Helpers/parse_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-/// aka PROJECT
 @JsonSerializable()
 class Item {
   @JsonKey(name: "id")

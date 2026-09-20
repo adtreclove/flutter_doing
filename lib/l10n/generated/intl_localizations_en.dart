@@ -44,11 +44,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_theme_system => 'System';
 
   @override
-  String get settings_show_kpi_title => 'Show KPIs';
+  String get settings_show_sorting_title => 'Show overview';
 
   @override
-  String get settings_show_kpi_subtitle =>
-      'Select if you want your KPIs to be displayed in classic layout';
+  String get settings_show_sorting_subtitle =>
+      'Select if you want an overview to be displayed in classic layout';
 
   @override
   String get settings_startup => 'Startup';
@@ -123,4 +123,119 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tray_close_app_mac => 'Stop app';
+
+  @override
+  String get layout_screen_title => 'Setup';
+
+  @override
+  String get layout_screen_finish_btn => 'Finish';
+
+  @override
+  String get layout_screen_preferences => 'Preferences';
+
+  @override
+  String get layout_screen_section_layout_title => 'Layout';
+
+  @override
+  String get edit_screen_no_list => 'No list';
+
+  @override
+  String get edit_screen_new_list => 'New list';
+
+  @override
+  String get edit_screen_new_list_name => 'List name';
+
+  @override
+  String get edit_screen_status_title => 'Status';
+
+  @override
+  String get edit_screen_status_priority => 'Priority';
+
+  @override
+  String get edit_screen_status_notes => 'Notes';
+
+  @override
+  String get edit_screen_notes_hint => 'Notes for this task';
+
+  @override
+  String get edit_screen_cancel => 'Cancel';
+
+  @override
+  String get edit_screen_create => 'Create';
+
+  @override
+  String get edit_screen_empty_detail =>
+      'Choose a task from the list or create a new one.';
+
+  @override
+  String get edit_screen_delete => 'Delete';
+
+  @override
+  String get edit_screen_activate_again => 'Reactivate';
+
+  @override
+  String get edit_screen_defer => 'Defer';
+
+  @override
+  String get edit_screen_no_task_in_list => 'No task in this list yet.';
+
+  @override
+  String get edit_screen_new_task => 'New task ..';
+
+  @override
+  String get edit_screen_close => 'Close';
+
+  @override
+  String get edit_screen_list => 'List:';
+
+  @override
+  String get edit_screen_title => 'Edit tasks';
+
+  @override
+  String get edit_screen_task_title => 'Title';
+
+  @override
+  String get classic_view_no_list => 'No list';
+
+  @override
+  String get classic_view_upcoming => 'Upcoming';
+
+  @override
+  String get classic_view_no_upcoming_tasks => 'No upcoming tasks';
+
+  @override
+  String get classic_view_sorting_done => 'done';
+
+  @override
+  String get classic_view_total => 'total';
+
+  @override
+  String get classic_view_overview => 'Overview';
+
+  @override
+  String get tasks_all_done => 'All done! ^-^';
+
+  @override
+  String get tasks_no_tasks => 'No tasks';
+
+  @override
+  String get default_list_name => 'My tasks';
+
+  @override
+  String get task_status_open => 'Open';
+
+  @override
+  String get task_status_done => 'Done';
+
+  @override
+  String get task_status_deferred => 'Deferred';
+
+  @override
+  String get task_priority_low => 'Low';
+
+  @override
+  String get task_priority_medium => 'Medium';
+
+  @override
+  String get task_priority_high => 'High';
 }

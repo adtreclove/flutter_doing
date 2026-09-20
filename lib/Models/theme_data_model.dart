@@ -32,7 +32,7 @@ class AppTheme {
 
   // Shared brand/accent color across both themes — adjust to match your
   // actual brand color if this doesn't already exist elsewhere.
-  static const _accent = Color(0xFF00A7E3);
+  static const _accent = Color.fromARGB(255, 255, 2, 213);
 
   static ThemeData get light {
     final colorScheme = ColorScheme.fromSeed(

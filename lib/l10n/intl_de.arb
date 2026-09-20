@@ -11,8 +11,8 @@
   "settings_theme_dark":                        "Dunkel",
   "settings_theme_light":                       "Hell",
   "settings_theme_system":                      "System",
-  "settings_show_kpi_title":                    "KPIs anzeigen",
-  "settings_show_kpi_subtitle":                 "Wählen Sie, ob Ihre KPIs in der klassischen Ansicht sichtbar sein sollen",
+  "settings_show_sorting_title":                "Übersicht anzeigen",
+  "settings_show_sorting_subtitle":             "Wählen Sie, ob Sie eine Übersicht in der klassischen Ansicht sichtbar sein soll",
   "settings_startup":                           "Appstart",
   "settings_startup_title_windows":             "Mit Windows starten",
   "settings_startup_title_mac":                 "Mit Mac starten",
@@ -37,5 +37,53 @@
 
   "tray_settings":                              "Einstellungen",
   "tray_close_app_windows" :                    "App schließen",
-  "tray_close_app_mac" :                        "App beenden"
+  "tray_close_app_mac" :                        "App beenden",
+
+
+  "layout_screen_title":                        "Initialisierung",
+  "layout_screen_finish_btn":                   "Abschließen",
+  "layout_screen_preferences":                  "Präferenzen",
+  "layout_screen_section_layout_title":         "Layout",
+
+  "edit_screen_no_list":                        "Keine Liste",
+  "edit_screen_new_list":                       "Neue Liste",
+  "edit_screen_new_list_name":                  "Name der Liste",
+  "edit_screen_status_title":                   "Status",
+  "edit_screen_status_priority":                "Priorität",
+  "edit_screen_status_notes":                   "Notizen",
+  "edit_screen_notes_hint":                     "Notizen zu dieser Aufgabe",
+  "edit_screen_cancel":                         "Abbrechen",
+  "edit_screen_create":                         "Erstellen",
+  "edit_screen_empty_detail":                   "Wähle eine Aufgabe aus der Liste, oder erstelle eine neue.",
+  "edit_screen_delete":                         "Löschen",
+  "edit_screen_activate_again":                 "Wieder aktivieren",
+  "edit_screen_defer":                          "Zurückstellen",
+  "edit_screen_no_task_in_list":                "Noch keine Aufgaben in dieser Liste.",
+  "edit_screen_new_task":                       "Neue Aufgabe ..",
+  "edit_screen_close":                          "Schließen",
+  "edit_screen_list":                           "Liste:",
+  "edit_screen_title":                          "Aufgaben bearbeiten",
+  "edit_screen_task_title":                     "Titel",
+
+
+  "classic_view_no_list":                       "Keine Liste",
+  "classic_view_upcoming":                      "Als nächstes",
+  "classic_view_no_upcoming_tasks":             "Keine weiteren Aufgaben",
+  "classic_view_sorting_done":                  "erledigt",
+  "classic_view_total":                         "gesamt",
+  "classic_view_overview":                      "Übersicht",
+
+  "tasks_all_done":                             "Alles erledigt! ^-^",
+  "tasks_no_tasks":                             "Keine Aufgaben",
+  "default_list_name":                          "Meine Aufgaben",
+
+  "task_status_open":                           "Offen",
+  "task_status_done":                           "Erledigt",
+  "task_status_deferred":                       "Zurückgestellt",
+
+  "task_priority_low":                          "Niedrig",
+  "task_priority_medium":                       "Mittel",
+  "task_priority_high":                         "Hoch"
+
+
 }

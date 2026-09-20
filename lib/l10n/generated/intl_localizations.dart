@@ -164,17 +164,17 @@ abstract class AppLocalizations {
   /// **'System'**
   String get settings_theme_system;
 
-  /// No description provided for @settings_show_kpi_title.
+  /// No description provided for @settings_show_sorting_title.
   ///
   /// In de, this message translates to:
-  /// **'KPIs anzeigen'**
-  String get settings_show_kpi_title;
+  /// **'Übersicht anzeigen'**
+  String get settings_show_sorting_title;
 
-  /// No description provided for @settings_show_kpi_subtitle.
+  /// No description provided for @settings_show_sorting_subtitle.
   ///
   /// In de, this message translates to:
-  /// **'Wählen Sie, ob Ihre KPIs in der klassischen Ansicht sichtbar sein sollen'**
-  String get settings_show_kpi_subtitle;
+  /// **'Wählen Sie, ob Sie eine Übersicht in der klassischen Ansicht sichtbar sein soll'**
+  String get settings_show_sorting_subtitle;
 
   /// No description provided for @settings_startup.
   ///
@@ -313,6 +313,234 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'App beenden'**
   String get tray_close_app_mac;
+
+  /// No description provided for @layout_screen_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Initialisierung'**
+  String get layout_screen_title;
+
+  /// No description provided for @layout_screen_finish_btn.
+  ///
+  /// In de, this message translates to:
+  /// **'Abschließen'**
+  String get layout_screen_finish_btn;
+
+  /// No description provided for @layout_screen_preferences.
+  ///
+  /// In de, this message translates to:
+  /// **'Präferenzen'**
+  String get layout_screen_preferences;
+
+  /// No description provided for @layout_screen_section_layout_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Layout'**
+  String get layout_screen_section_layout_title;
+
+  /// No description provided for @edit_screen_no_list.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Liste'**
+  String get edit_screen_no_list;
+
+  /// No description provided for @edit_screen_new_list.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Liste'**
+  String get edit_screen_new_list;
+
+  /// No description provided for @edit_screen_new_list_name.
+  ///
+  /// In de, this message translates to:
+  /// **'Name der Liste'**
+  String get edit_screen_new_list_name;
+
+  /// No description provided for @edit_screen_status_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Status'**
+  String get edit_screen_status_title;
+
+  /// No description provided for @edit_screen_status_priority.
+  ///
+  /// In de, this message translates to:
+  /// **'Priorität'**
+  String get edit_screen_status_priority;
+
+  /// No description provided for @edit_screen_status_notes.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen'**
+  String get edit_screen_status_notes;
+
+  /// No description provided for @edit_screen_notes_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen zu dieser Aufgabe'**
+  String get edit_screen_notes_hint;
+
+  /// No description provided for @edit_screen_cancel.
+  ///
+  /// In de, this message translates to:
+  /// **'Abbrechen'**
+  String get edit_screen_cancel;
+
+  /// No description provided for @edit_screen_create.
+  ///
+  /// In de, this message translates to:
+  /// **'Erstellen'**
+  String get edit_screen_create;
+
+  /// No description provided for @edit_screen_empty_detail.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle eine Aufgabe aus der Liste, oder erstelle eine neue.'**
+  String get edit_screen_empty_detail;
+
+  /// No description provided for @edit_screen_delete.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get edit_screen_delete;
+
+  /// No description provided for @edit_screen_activate_again.
+  ///
+  /// In de, this message translates to:
+  /// **'Wieder aktivieren'**
+  String get edit_screen_activate_again;
+
+  /// No description provided for @edit_screen_defer.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurückstellen'**
+  String get edit_screen_defer;
+
+  /// No description provided for @edit_screen_no_task_in_list.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Aufgaben in dieser Liste.'**
+  String get edit_screen_no_task_in_list;
+
+  /// No description provided for @edit_screen_new_task.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Aufgabe ..'**
+  String get edit_screen_new_task;
+
+  /// No description provided for @edit_screen_close.
+  ///
+  /// In de, this message translates to:
+  /// **'Schließen'**
+  String get edit_screen_close;
+
+  /// No description provided for @edit_screen_list.
+  ///
+  /// In de, this message translates to:
+  /// **'Liste:'**
+  String get edit_screen_list;
+
+  /// No description provided for @edit_screen_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgaben bearbeiten'**
+  String get edit_screen_title;
+
+  /// No description provided for @edit_screen_task_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Titel'**
+  String get edit_screen_task_title;
+
+  /// No description provided for @classic_view_no_list.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Liste'**
+  String get classic_view_no_list;
+
+  /// No description provided for @classic_view_upcoming.
+  ///
+  /// In de, this message translates to:
+  /// **'Als nächstes'**
+  String get classic_view_upcoming;
+
+  /// No description provided for @classic_view_no_upcoming_tasks.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine weiteren Aufgaben'**
+  String get classic_view_no_upcoming_tasks;
+
+  /// No description provided for @classic_view_sorting_done.
+  ///
+  /// In de, this message translates to:
+  /// **'erledigt'**
+  String get classic_view_sorting_done;
+
+  /// No description provided for @classic_view_total.
+  ///
+  /// In de, this message translates to:
+  /// **'gesamt'**
+  String get classic_view_total;
+
+  /// No description provided for @classic_view_overview.
+  ///
+  /// In de, this message translates to:
+  /// **'Übersicht'**
+  String get classic_view_overview;
+
+  /// No description provided for @tasks_all_done.
+  ///
+  /// In de, this message translates to:
+  /// **'Alles erledigt! ^-^'**
+  String get tasks_all_done;
+
+  /// No description provided for @tasks_no_tasks.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Aufgaben'**
+  String get tasks_no_tasks;
+
+  /// No description provided for @default_list_name.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Aufgaben'**
+  String get default_list_name;
+
+  /// No description provided for @task_status_open.
+  ///
+  /// In de, this message translates to:
+  /// **'Offen'**
+  String get task_status_open;
+
+  /// No description provided for @task_status_done.
+  ///
+  /// In de, this message translates to:
+  /// **'Erledigt'**
+  String get task_status_done;
+
+  /// No description provided for @task_status_deferred.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurückgestellt'**
+  String get task_status_deferred;
+
+  /// No description provided for @task_priority_low.
+  ///
+  /// In de, this message translates to:
+  /// **'Niedrig'**
+  String get task_priority_low;
+
+  /// No description provided for @task_priority_medium.
+  ///
+  /// In de, this message translates to:
+  /// **'Mittel'**
+  String get task_priority_medium;
+
+  /// No description provided for @task_priority_high.
+  ///
+  /// In de, this message translates to:
+  /// **'Hoch'**
+  String get task_priority_high;
 }
 
 class _AppLocalizationsDelegate
